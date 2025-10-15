@@ -344,8 +344,9 @@ def analyze_path(root: str) -> List[FileReport]:
     return reports
 
 
-def render_text(reports: List[FileReport]) -> str:
+def render_text(reports: List[FileReport], threshold: Optional[int] = None) -> str:
     lines: List[str] = []
+    triggered_alerts: List[str] = []
     for report in reports:
         lines.append(f"File: {report.path} ({report.language})")
         if not report.methods:
@@ -353,11 +354,26 @@ def render_text(reports: List[FileReport]) -> str:
             continue
         for method in report.methods:
             metadata = " ".join(f"{key}={value}" for key, value in sorted(method.metadata.items()))
-            lines.append(
+            alert = threshold is not None and method.complexity >= threshold
+            if alert:
+                triggered_alerts.append(
+                    f"{report.path}::{method.name} (complexity {method.complexity})"
+                )
+            base_line = (
                 f"  {method.name}: complexity={method.complexity} lines={method.start_line}-{method.end_line}"
                 + (f" [{metadata}]" if metadata else "")
             )
+            if alert:
+                base_line += f"  <-- ALERT: complexity exceeds threshold ({threshold})"
+            lines.append(base_line)
         lines.append(f"  Total complexity: {report.total_complexity}")
+    if threshold is not None:
+        lines.append("")
+        if triggered_alerts:
+            lines.append(f"Alert summary (threshold={threshold}):")
+            lines.extend(f"  {entry}" for entry in triggered_alerts)
+        else:
+            lines.append(f"No methods exceeded the complexity threshold ({threshold}).")
     return "\n".join(lines)
 
 
@@ -365,6 +381,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Measure cyclomatic complexity for VB.NET-era projects.")
     parser.add_argument("root", nargs="?", default=".", help="Root directory to scan")
     parser.add_argument("--format", choices={"text", "json"}, default="text", help="Output format")
+    parser.add_argument(
+        "--threshold",
+        type=int,
+        default=None,
+        help="Cyclomatic complexity threshold that triggers alerts",
+    )
     args = parser.parse_args(argv)
 
     reports = analyze_path(args.root)
@@ -382,6 +404,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                         "start_line": method.start_line,
                         "end_line": method.end_line,
                         "metadata": method.metadata,
+                        "exceeds_threshold": (
+                            args.threshold is not None and method.complexity >= args.threshold
+                        ),
                     }
                     for method in report.methods
                 ],
@@ -391,7 +416,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         json.dump(payload, fp=sys.stdout, indent=2, ensure_ascii=False)
         sys.stdout.write("\n")
     else:
-        print(render_text(reports))
+        print(render_text(reports, threshold=args.threshold))
 
     return 0
 
