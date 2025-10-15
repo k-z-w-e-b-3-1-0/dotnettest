@@ -1,21 +1,31 @@
 # dotnettest
 
-## Cyclomatic complexity analyzer
+## サイクロマティック複雑度アナライザー
 
-This repository contains a simple utility for measuring the cyclomatic
-complexity of legacy VB.NET (.NET Framework 3.5 era) code bases. The script can
-scan VB (`.vb`), ASP.NET Web Forms (`.aspx`, `.ascx`, `.master`) and JavaScript
-(`.js`) files and reports complexity information per method.
+このリポジトリには、レガシーな VB.NET (.NET Framework 3.5 世代) のコードベースを対象とした
+サイクロマティック複雑度の計測ユーティリティが含まれています。スクリプトは VB (`.vb`)、
+ASP.NET Web Forms (`.aspx`、`.ascx`、`.master`)、JavaScript (`.js`) ファイルを走査し、
+メソッド単位の複雑度をレポートします。
 
-### Usage
+### 使い方
 
 ```bash
 python tools/complexity_analyzer.py <path-to-project-root>
 ```
 
-By default the tool prints a text report. Pass `--format json` to receive a
-JSON payload instead.
+既定ではテキスト形式のレポートが表示されます。`--format json` を指定すると JSON 形式で
+結果を取得できます。
 
-The analyzer uses pragmatic heuristics and is not a full parser. Nested
-`<script runat="server">` blocks inside ASP.NET files are supported for inline
-VB and JavaScript code.
+アナライザーは完全なパーサーではなく、実践的なヒューリスティックに基づいています。
+ASP.NET ファイル内の `<script runat="server">` ブロックに含まれる VB や JavaScript の
+インラインコードにも対応しています。
+
+### サンプルデータ
+
+`samples/` ディレクトリには、各主要拡張子ごとに 2 つずつ用意したサンプルファイルが格納されています。
+ツールの挙動を確認する際に活用してください。
+
+### チュートリアル出力
+
+`tutorials/complexity_report.md` には、サンプルデータに対してツールを実行した際のコマンドと
+出力例をチュートリアル形式で保存しています。
