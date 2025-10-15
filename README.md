@@ -9,12 +9,28 @@ ASP.NET Web Forms (`.aspx`、`.ascx`、`.master`)、JavaScript (`.js`) ファイ
 
 ### 使い方
 
-```bash
-python tools/complexity_analyzer.py <path-to-project-root>
-```
+1. Python 3.9 以降がインストールされていることを確認します。
+2. リポジトリをクローンし、作業ディレクトリを移動します。
 
-既定ではテキスト形式のレポートが表示されます。`--format json` を指定すると JSON 形式で
-結果を取得できます。
+    ```bash
+    git clone https://github.com/your-org/dotnettest.git
+    cd dotnettest
+    ```
+
+3. 複雑度を計測したいプロジェクトのルートパスを指定してスクリプトを実行します。
+
+    ```bash
+    python tools/complexity_analyzer.py <path-to-project-root>
+    ```
+
+4. 既定ではテキスト形式のレポートが表示されます。JSON 形式で取得したい場合は `--format json`
+   オプションを指定します。
+
+    ```bash
+    python tools/complexity_analyzer.py <path-to-project-root> --format json > report.json
+    ```
+
+   JSON 出力はファイルにリダイレクトすることで後から再利用しやすくなります。
 
 アナライザーは完全なパーサーではなく、実践的なヒューリスティックに基づいています。
 ASP.NET ファイル内の `<script runat="server">` ブロックに含まれる VB や JavaScript の
