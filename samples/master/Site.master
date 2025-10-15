@@ -1,0 +1,27 @@
+<%@ Master Language="VB" AutoEventWireup="false" CodeFile="Site.master.vb" Inherits="SiteMaster" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title><asp:ContentPlaceHolder ID="HeadContent" runat="server" /></title>
+</head>
+<body>
+    <form runat="server">
+        <div class="navigation">
+            <asp:ContentPlaceHolder ID="NavigationContent" runat="server" />
+        </div>
+        <div class="body">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+    </form>
+</body>
+</html>
+<script runat="server">
+    Protected Sub Page_Load(sender As Object, e As EventArgs)
+        If Not Page.IsPostBack Then
+            Dim themeName As String = Request.QueryString("theme")
+            If Not String.IsNullOrEmpty(themeName) Then
+                Page.Theme = themeName
+            End If
+        End If
+    End Sub
+</script>

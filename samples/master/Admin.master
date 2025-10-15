@@ -1,0 +1,25 @@
+<%@ Master Language="VB" AutoEventWireup="false" CodeFile="Admin.master.vb" Inherits="AdminMaster" %>
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>Admin - <asp:ContentPlaceHolder ID="HeadContent" runat="server" /></title>
+</head>
+<body>
+    <form runat="server">
+        <div class="sidebar">
+            <asp:ContentPlaceHolder ID="SidebarContent" runat="server" />
+        </div>
+        <div class="main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+    </form>
+</body>
+</html>
+<script runat="server">
+    Protected Sub Page_Load(sender As Object, e As EventArgs)
+        Dim userRoles = Context.User.IsInRole("Administrator")
+        If Not userRoles Then
+            Response.Redirect("/Account/Login")
+        End If
+    End Sub
+</script>
