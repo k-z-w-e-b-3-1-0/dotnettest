@@ -5,7 +5,13 @@
 
 ## 1. コマンドの実行
 
-以下のコマンドを実行して、`samples/` 配下の VB、ASP.NET、JavaScript ファイルを解析します。
+VB.NET ファイルのみを対象とする場合は、.NET コンソールアプリケーションを利用できます。
+
+```bash
+dotnet run --project tools/VbCyclomaticAnalyzer -- samples
+```
+
+ASP.NET や JavaScript を含めて解析したい場合は、従来の Python スクリプトを使用します。
 
 ```bash
 python tools/complexity_analyzer.py samples
